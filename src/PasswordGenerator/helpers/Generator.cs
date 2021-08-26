@@ -6,10 +6,19 @@ namespace PasswordGenerator.Helpers
 {
     using Models;
 
+    /// <summary>
+    /// This is the core generator for generating random passwords.
+    /// </summary>
     public static class Generator
     {
         public readonly static CharacterLists characterLists = new();
 
+        /// <summary>
+        /// Generates a randomized password.
+        /// </summary>
+        /// <param name="passwordLength">The length the password should be.</param>
+        /// <param name="ignoreChars">An array of characters to be ignored from the generated password.</param>
+        /// <returns></returns>
         public static string CreatePassword(int passwordLength, List<string> ignoreChars)
         {
             List<string> randomChars = new();
@@ -36,6 +45,10 @@ namespace PasswordGenerator.Helpers
             return string.Join("", randomChars);
         }
 
+        /// <summary>
+        /// Randomly select a single character.
+        /// </summary>
+        /// <returns></returns>
         public static string GetRandomCharacter()
         {
             CharacterType charType = GetRandomCharacterType();
@@ -59,12 +72,22 @@ namespace PasswordGenerator.Helpers
             return charItem.Character;
         }
 
-        public static CharacterType GetRandomCharacterType()
+        /// <summary>
+        /// Get a random character type. Used for randomly selecting what type of character to generate.
+        /// </summary>
+        /// <returns></returns>
+        private static CharacterType GetRandomCharacterType()
         {
             return (CharacterType)GetRandomNumber(0, 2);
         }
 
-        public static int GetRandomNumber(int minValue, int maxValue)
+        /// <summary>
+        /// Generate a random number within a specified range.
+        /// </summary>
+        /// <param name="minValue">The minimum value that can be returned. Defaults to '0'.</param>
+        /// <param name="maxValue">The maximum value that can be returned. Defaults to '100'</param>
+        /// <returns></returns>
+        public static int GetRandomNumber(int minValue = 0, int maxValue = 100)
         {
             int randomNum;
             byte[] randomNumBytes = new byte[4];
