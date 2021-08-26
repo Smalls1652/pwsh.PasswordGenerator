@@ -1,3 +1,5 @@
+using System;
+
 namespace PasswordGenerator.Models
 {
     /// <summary>
@@ -18,17 +20,17 @@ namespace PasswordGenerator.Models
         /// <summary>
         /// The character in a string format.
         /// </summary>
-        public string Character
+        public char Character
         {
             get
             {
-                return char.ConvertFromUtf32(Utf32Code);
+                return Convert.ToChar(char.ConvertFromUtf32(Utf32Code));
             }
         }
 
         public override string ToString()
         {
-            return Character;
+            return Character.ToString();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace PasswordGenerator.Helpers
 {
@@ -14,21 +16,57 @@ namespace PasswordGenerator.Helpers
         public readonly static CharacterLists characterLists = new();
 
         /// <summary>
-        /// Generates a randomized password.
+        /// Generates a randomly generated password and returns as a SecureString.
         /// </summary>
         /// <param name="passwordLength">The length the password should be.</param>
         /// <param name="ignoreChars">An array of characters to be ignored from the generated password.</param>
         /// <returns></returns>
-        public static string CreatePassword(int passwordLength, List<string> ignoreChars)
+        public static SecureString CreatePassword_SecureString(int passwordLength, List<char> ignoreChars)
         {
-            List<string> randomChars = new();
+            SecureString secureString = new();
+            char[] charList = createPasswordCharArray(passwordLength, ignoreChars);
 
-            for (int i = 1; i <= passwordLength; i++)
+            foreach (char item in charList)
+                secureString.AppendChar(item);
+
+            secureString.MakeReadOnly();
+
+            return secureString;
+        }
+
+        /// <summary>
+        /// Generates a randomly generated password and returns as a string.
+        /// </summary>
+        /// <param name="passwordLength">The length the password should be.</param>
+        /// <param name="ignoreChars">An array of characters to be ignored from the generated password.</param>
+        /// <returns></returns>
+        public static string CreatePassword_String(int passwordLength, List<char> ignoreChars)
+        {
+            StringBuilder stringBuilder = new();
+            char[] charList = createPasswordCharArray(passwordLength, ignoreChars);
+            
+            foreach (char item in charList)
+                stringBuilder.Append(item);
+
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Generates a randomized password into a char array.
+        /// </summary>
+        /// <param name="passwordLength">The length the password should be.</param>
+        /// <param name="ignoreChars">An array of characters to be ignored from the generated password.</param>
+        /// <returns></returns>
+        private static char[] createPasswordCharArray(int passwordLength, List<char> ignoreChars)
+        {
+            char[] randomChars = new char[passwordLength];
+
+            for (int i = 0; i <= (passwordLength - 1); i++)
             {
                 bool charGenerated = false;
                 while (!charGenerated)
                 {
-                    string generatedChar = GetRandomCharacter();
+                    char generatedChar = GetRandomCharacter();
 
                     if ((ignoreChars != null) && (ignoreChars.Contains(generatedChar) == true))
                     {
@@ -36,20 +74,20 @@ namespace PasswordGenerator.Helpers
                     }
                     else
                     {
-                        randomChars.Add(generatedChar);
+                        randomChars[i] = generatedChar;
                         charGenerated = true;
                     }
                 }
             }
 
-            return string.Join("", randomChars);
+            return randomChars;
         }
 
         /// <summary>
         /// Randomly select a single character.
         /// </summary>
         /// <returns></returns>
-        public static string GetRandomCharacter()
+        public static char GetRandomCharacter()
         {
             CharacterType charType = GetRandomCharacterType();
             CharacterItem charItem;
