@@ -46,7 +46,7 @@ namespace PasswordGenerator.Cmdlets
 
             if (AsString)
             {
-                WriteWarning("Password is being saved as a string.");
+                WriteWarning("Password is being output as a string.");
                 WriteObject(Generator.CreatePassword_String(_passwordLength, IgnoredCharacters));
             }
             else
