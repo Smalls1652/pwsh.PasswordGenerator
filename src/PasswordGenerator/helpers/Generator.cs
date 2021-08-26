@@ -24,7 +24,7 @@ namespace PasswordGenerator.Helpers
         public static SecureString CreatePassword_SecureString(int passwordLength, List<char> ignoreChars)
         {
             SecureString secureString = new();
-            char[] charList = createPasswordCharArray(passwordLength, ignoreChars);
+            char[] charList = CreatePasswordCharArray(passwordLength, ignoreChars);
 
             foreach (char item in charList)
                 secureString.AppendChar(item);
@@ -43,8 +43,8 @@ namespace PasswordGenerator.Helpers
         public static string CreatePassword_String(int passwordLength, List<char> ignoreChars)
         {
             StringBuilder stringBuilder = new();
-            char[] charList = createPasswordCharArray(passwordLength, ignoreChars);
-            
+            char[] charList = CreatePasswordCharArray(passwordLength, ignoreChars);
+
             foreach (char item in charList)
                 stringBuilder.Append(item);
 
@@ -57,7 +57,7 @@ namespace PasswordGenerator.Helpers
         /// <param name="passwordLength">The length the password should be.</param>
         /// <param name="ignoreChars">An array of characters to be ignored from the generated password.</param>
         /// <returns></returns>
-        private static char[] createPasswordCharArray(int passwordLength, List<char> ignoreChars)
+        private static char[] CreatePasswordCharArray(int passwordLength, List<char> ignoreChars)
         {
             char[] randomChars = new char[passwordLength];
 
@@ -80,7 +80,27 @@ namespace PasswordGenerator.Helpers
                 }
             }
 
-            return randomChars;
+            List<int> shuffledIndexes = new();
+            char[] randomCharsShuffled = new char[randomChars.Length];
+            for (int i = 0; i <= (randomChars.Length - 1); i++)
+            {
+                bool indexCompleted = false;
+                while (!indexCompleted)
+                {
+                    int randomIndex = GetRandomNumber(0, (randomChars.Length - 1));
+                    if ((shuffledIndexes.Contains(randomIndex) == false))
+                    {
+                        shuffledIndexes.Add(randomIndex);
+                        randomCharsShuffled[i] = randomChars[randomIndex];
+
+                        indexCompleted = true;
+                    }
+                }
+            }
+
+            shuffledIndexes.Clear();
+
+            return randomCharsShuffled;
         }
 
         /// <summary>
