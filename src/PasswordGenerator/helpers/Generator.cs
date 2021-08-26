@@ -138,7 +138,7 @@ namespace PasswordGenerator.Helpers
             CharacterType charType = GetRandomCharacterType();
             CharacterItem charItem;
 
-            // Get a random character based off the type.
+            // Get a random character based off of the type.
             switch (charType)
             {
                 // Type = Number
@@ -178,6 +178,8 @@ namespace PasswordGenerator.Helpers
         public static int GetRandomNumber(int minValue = 0, int maxValue = 100)
         {
             // Create a byte array that can hold 4 bytes.
+            // The reason why it's 4 bytes is because:
+            // 4 bytes == A 32-bit integer
             byte[] randomNumBytes = new byte[4];
 
             // Use the 'RandomNumberGenerator' class to cryptographically generate random bytes.
@@ -187,7 +189,7 @@ namespace PasswordGenerator.Helpers
                 rng.GetBytes(randomNumBytes);
             }
 
-            // Get the absolute value of the data in the byte array.
+            // Get the absolute value of the data in the byte array as an integer.
             int generatedNum = Math.Abs(
                 BitConverter.ToInt32(randomNumBytes, 0)
             );
