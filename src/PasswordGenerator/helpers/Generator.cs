@@ -23,12 +23,15 @@ namespace PasswordGenerator.Helpers
         /// <returns></returns>
         public static SecureString CreatePassword_SecureString(int passwordLength, List<char> ignoreChars)
         {
-            SecureString secureString = new();
+            // Create a randomized password char array.
             char[] charList = CreatePasswordCharArray(passwordLength, ignoreChars);
 
+            // Initialize the SecureString and append all chars.
+            SecureString secureString = new();
             foreach (char item in charList)
                 secureString.AppendChar(item);
 
+            // Set the secure string to read-only, since we're through with creating it.
             secureString.MakeReadOnly();
 
             return secureString;
@@ -42,9 +45,11 @@ namespace PasswordGenerator.Helpers
         /// <returns></returns>
         public static string CreatePassword_String(int passwordLength, List<char> ignoreChars)
         {
-            StringBuilder stringBuilder = new();
+            // Create a randomized password char array.
             char[] charList = CreatePasswordCharArray(passwordLength, ignoreChars);
 
+            // Initialize the StringBuilder and append all chars to it.
+            StringBuilder stringBuilder = new();
             foreach (char item in charList)
                 stringBuilder.Append(item);
 
@@ -59,46 +64,66 @@ namespace PasswordGenerator.Helpers
         /// <returns></returns>
         private static char[] CreatePasswordCharArray(int passwordLength, List<char> ignoreChars)
         {
+            // Instantiate a char array of the provided password length.
             char[] randomChars = new char[passwordLength];
 
+            // Fill the char array with random characters.
             for (int i = 0; i <= (passwordLength - 1); i++)
             {
                 bool charGenerated = false;
                 while (!charGenerated)
                 {
+                    // Generate the random character.
                     char generatedChar = GetRandomCharacter();
 
+                    // Check to make sure the generated character is not in the ignore list if provided.
                     if ((ignoreChars != null) && (ignoreChars.Contains(generatedChar) == true))
                     {
                         charGenerated = false;
                     }
                     else
                     {
+                        // Set the index of the char array to the generated character.
+                        // Then exit the while loop to move to the next index.
                         randomChars[i] = generatedChar;
                         charGenerated = true;
                     }
                 }
             }
 
+            // Start shuffling the char array.
+            // Instantiate an integer list for storing already shuffled indexes.
             List<int> shuffledIndexes = new();
+
+            // Instantiate a new char array that matches the size as the original char array.
             char[] randomCharsShuffled = new char[randomChars.Length];
+
+            // Iterate through each index of the original char array.
             for (int i = 0; i <= (randomChars.Length - 1); i++)
             {
                 bool indexCompleted = false;
                 while (!indexCompleted)
                 {
+                    // Generate a random number between 0 and the length of the original char array (minus 1).
                     int randomIndex = GetRandomNumber(0, (randomChars.Length - 1));
+
+                    // Check to ensure that the random index number hasn't already been used.
                     if ((shuffledIndexes.Contains(randomIndex) == false))
                     {
+                        // Add the index to the integer list so it's not processed again.
+                        // Then add the character to the new char array.
                         shuffledIndexes.Add(randomIndex);
                         randomCharsShuffled[i] = randomChars[randomIndex];
 
+                        // Exit the while loop and continue to the next index.
                         indexCompleted = true;
                     }
                 }
             }
 
+            // Clear the integer list and free the memory.
             shuffledIndexes.Clear();
+            shuffledIndexes.Capacity = 0;
 
             return randomCharsShuffled;
         }
@@ -109,19 +134,24 @@ namespace PasswordGenerator.Helpers
         /// <returns></returns>
         public static char GetRandomCharacter()
         {
+            // Get the type of character to randomly generate.
             CharacterType charType = GetRandomCharacterType();
             CharacterItem charItem;
 
+            // Get a random character based off the type.
             switch (charType)
             {
+                // Type = Number
                 case CharacterType.NumberCharacter:
                     charItem = characterLists.Numbers[GetRandomNumber(0, (characterLists.Numbers.ToArray().Length - 1))];
                     break;
 
+                // Type = Symbol
                 case CharacterType.SymbolCharacter:
                     charItem = characterLists.Symbols[GetRandomNumber(0, (characterLists.Symbols.ToArray().Length - 1))];
                     break;
 
+                // Type = Alpha
                 default:
                     charItem = characterLists.AlphaCharacters[GetRandomNumber(0, (characterLists.AlphaCharacters.ToArray().Length - 1))];
                     break;
@@ -143,25 +173,30 @@ namespace PasswordGenerator.Helpers
         /// Generate a random number within a specified range.
         /// </summary>
         /// <param name="minValue">The minimum value that can be returned. Defaults to '0'.</param>
-        /// <param name="maxValue">The maximum value that can be returned. Defaults to '100'</param>
+        /// <param name="maxValue">The maximum value that can be returned. Defaults to '100'.</param>
         /// <returns></returns>
         public static int GetRandomNumber(int minValue = 0, int maxValue = 100)
         {
-            int randomNum;
+            // Create a byte array that can hold 4 bytes.
             byte[] randomNumBytes = new byte[4];
-            int minMaxDiff = (maxValue + 1) - minValue;
 
+            // Use the 'RandomNumberGenerator' class to cryptographically generate random bytes.
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
+                // Fill the byte array with random bytes.
                 rng.GetBytes(randomNumBytes);
             }
 
+            // Get the absolute value of the data in the byte array.
             int generatedNum = Math.Abs(
                 BitConverter.ToInt32(randomNumBytes, 0)
             );
 
-            randomNum = minValue + (generatedNum % minMaxDiff);
-
+            // Calculate the difference between the max value (plus 1) and the minimum value.
+            int minMaxDiff = (maxValue + 1) - minValue;
+            
+            // Get the random number by adding the minimum value to the modulus of the random byte array data and the min/max difference. 
+            int randomNum = minValue + (generatedNum % minMaxDiff);
             return randomNum;
         }
     }
