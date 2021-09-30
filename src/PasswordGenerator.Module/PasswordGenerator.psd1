@@ -6,7 +6,7 @@
 
 @{
     RootModule        = "PasswordGenerator.dll"
-    ModuleVersion     = "2021.8.0"
+    ModuleVersion     = "2021.8.1"
     GUID              = "afebc039-b2cf-482b-8e1d-1651de109d65"
     Author            = "Timothy Small"
     CompanyName       = "Smalls.Online"
@@ -30,7 +30,8 @@
 
     FunctionsToExport = @()
     CmdletsToExport   = @(
-        "New-RandomPassword"
+        "New-RandomPassword",
+        "New-RandomNumber"
     )
     VariablesToExport = "*"
     AliasesToExport   = @()
