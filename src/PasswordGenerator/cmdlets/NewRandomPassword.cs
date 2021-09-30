@@ -35,6 +35,14 @@ namespace PasswordGenerator.Cmdlets
         [Parameter(Position = 2)]
         public SwitchParameter AsString { get; set; }
 
+        [Parameter(Position = 3)]
+        public SwitchParameter Shuffle
+        {
+            get => _shuffle;
+            set => _shuffle = value;
+        }
+        private SwitchParameter _shuffle = false;
+
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
@@ -44,14 +52,19 @@ namespace PasswordGenerator.Cmdlets
         {
             WriteVerbose("Generating password.");
 
+            if (_shuffle)
+            {
+                WriteWarning("Shuffling will take longer to execute.");
+            }
+
             if (AsString)
             {
                 WriteWarning("Password is being output as a string.");
-                WriteObject(Generator.CreatePassword_String(_passwordLength, IgnoredCharacters));
+                WriteObject(Generator.CreatePassword_String(_passwordLength, IgnoredCharacters, _shuffle));
             }
             else
             {
-                WriteObject(Generator.CreatePassword_SecureString(_passwordLength, IgnoredCharacters));
+                WriteObject(Generator.CreatePassword_SecureString(_passwordLength, IgnoredCharacters, _shuffle));
             }
         }
 
